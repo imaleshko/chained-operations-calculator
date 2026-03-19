@@ -1,6 +1,30 @@
+require "prime"
+
 class Calculator
   def initialize
     @memory = 0
+    @stack = []
+  end
+
+  def push_to_stack(value)
+    @stack << value
+    value
+  end
+
+  def pop_from_stack(value)
+    return error(value) if @stack.empty?
+    @stack.pop
+  end
+
+  def primes(min)
+    max = enter.to_i
+    return error(min) if max < 1
+    primes_list = Prime.each(max).select { |number| number < max && number > min }
+    return error(min) if primes_list.empty?
+    primes_list.each do |number|
+      @stack << number
+    end
+    primes_list.last
   end
 
   def mem_write(value)
@@ -134,6 +158,12 @@ class Calculator
       current
     when "mr"
       @memory
+    when "push"
+      push_to_stack(current)
+    when "pop"
+      pop_from_stack(current)
+    when "primes"
+      primes(current)
     else
       puts "Operation not allowed"
       current
