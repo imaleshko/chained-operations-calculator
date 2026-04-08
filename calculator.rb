@@ -6,181 +6,109 @@ class Calculator
     @stack = []
   end
 
-  def push_to_stack(value)
-    @stack << value
-    value
+  def add(number1, number2)
+    number1 + number2
   end
 
-  def pop_from_stack(value)
-    return error(value) if @stack.empty?
-    @stack.pop
+  def subtract(number1, number2)
+    number1 - number2
   end
 
-  def primes(min)
-    max = enter.to_i
-    return error(min) if max < 1
-    primes_list = Prime.each(max).select { |number| number < max && number > min }
-    return error(min) if primes_list.empty?
-    primes_list.each do |number|
-      @stack << number
-    end
-    primes_list.last
+  def multiply(number1, number2)
+    number1 * number2
   end
 
-  def mem_write(value)
-    @memory = value
+  def divide(number1, number2)
+    raise "Division by zero" if number2.zero?
+    number1 / number2
   end
 
-  def enter
-    gets.chomp.to_f
+  def modulo(number1, number2)
+    raise "Division by zero" if number2.zero?
+    number1 % number2
   end
 
-  def error(value)
-    puts "Error"
-    value
+  def power(number1, number2)
+    number1**number2
+  end
+
+  def increment(number)
+    number + 1
+  end
+
+  def decrement(number)
+    number - 1
+  end
+
+  def sqrt(number)
+    raise "Square root of negative number" if number < 0
+    Math.sqrt(number)
   end
 
   def to_radians(degrees)
     degrees * Math::PI / 180
   end
 
-  def add(value)
-    value + enter
+  def sin(number)
+    Math.sin(to_radians(number))
   end
 
-  def subtraction(value)
-    value - enter
+  def cos(number)
+    Math.cos(to_radians(number))
   end
 
-  def multiplication(value)
-    value * enter
+  def tan(number)
+    Math.tan(to_radians(number))
   end
 
-  def division(value)
-    entered = enter
-    return value / entered if entered != 0
-    error(value)
+  def cot(number)
+    tan = tan(number)
+    raise "Cotangent of zero" if tan == 0
+    1.0 / tan
   end
 
-  def modulo(value)
-    entered = enter
-    return value % entered if entered != 0
-    error(value)
+  def exp(number)
+    Math.exp(number)
   end
 
-  def exponentiation(value)
-    value ** enter
+  def log(number)
+    raise "Logarithm of negative number or zero" if number <= 0
+    Math.log(number)
   end
 
-  def increment(value)
-    value + 1
-  end
-
-  def decrement(value)
-    value - 1
-  end
-
-  def square_root(value)
-    return Math.sqrt(value) if value >= 0
-    error(value)
-  end
-
-  def sine(value)
-    Math.sin(to_radians(value))
-  end
-
-  def cosine(value)
-    Math.cos(to_radians(value))
-  end
-
-  def tangent(value)
-    Math.tan(to_radians(value))
-  end
-
-  def cotangent(value)
-    tan = tangent(value)
-    return 1.0 / tan if tan != 0
-    error(value)
-  end
-
-  def exponential(value)
-    Math.exp(value)
-  end
-
-  def logarithm(value)
-    return Math.log(value) if value > 0
-    error(value)
-  end
-
-  def factorial(value)
-    return error(value) if value < 0
+  def factorial(number)
+    raise "Factorial of negative number" if number < 0
     result = 1
-    (1..value.to_i).each { |number| result *= number }
+    (1..number.to_i).each { |num| result *= num }
     result
   end
 
-  def calculation(current, operation)
-    case operation
-    when "+"
-      add(current)
-    when "-"
-      subtraction(current)
-    when "*"
-      multiplication(current)
-    when "/"
-      division(current)
-    when "mod"
-      modulo(current)
-    when "pow"
-      exponentiation(current)
-    when "++"
-      increment(current)
-    when "--"
-      decrement(current)
-    when "sqrt"
-      square_root(current)
-    when "sin"
-      sine(current)
-    when "cos"
-      cosine(current)
-    when "tan"
-      tangent(current)
-    when "ctan"
-      cotangent(current)
-    when "exp"
-      exponential(current)
-    when "ln"
-      logarithm(current)
-    when "!"
-      factorial(current)
-    when "mw"
-      mem_write(current)
-      current
-    when "mr"
-      @memory
-    when "push"
-      push_to_stack(current)
-    when "pop"
-      pop_from_stack(current)
-    when "primes"
-      primes(current)
-    else
-      puts "Operation not allowed"
-      current
+  def primes(min, max)
+    raise "Max number must be greater than min number" if max < min
+    raise "Max number must be greater than 1" if max < 1
+    primes_list = Prime.each(max).select { |number| number > min && number < max }
+    raise "No primes found" if primes_list.empty?
+    primes_list.each do |number|
+      @stack << number
     end
+    primes_list.last
   end
 
-  def run
-    puts "Calculator has started"
-    current = gets.chomp.to_f
-    loop do
-      operation = gets.chomp
-      break if operation == "exit"
-      current = calculation(current, operation)
-      puts current
-    end
+  def mem_write(number)
+    @memory = number
+  end
+
+  def mem_read
+    @memory
+  end
+
+  def push_to_stack(number)
+    @stack << number
+    number
+  end
+
+  def pop_from_stack
+    raise "Stack is empty" if @stack.empty?
+    @stack.pop
   end
 end
-
-calculator = Calculator.new
-calculator.run
