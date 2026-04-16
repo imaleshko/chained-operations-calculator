@@ -3,14 +3,18 @@ require_relative "commands"
 
 class Main
   def initialize
-    @calculator = Calculator.new
-    @commands = {
+    puts "Calculator has started"
+    @calculator = Calculator.new(gets.chomp.to_f)
+    @commands_with_additional_operand = {
       "+" => PlusCommand.new(@calculator),
       "-" => MinusCommand.new(@calculator),
       "*" => MultiplyCommand.new(@calculator),
       "/" => DivisionCommand.new(@calculator),
       "mod" => ModuloCommand.new(@calculator),
       "pow" => PowerCommand.new(@calculator),
+      "primes" => PrimesCommand.new(@calculator)
+    }
+    @commands_without_additional_operand = {
       "++" => IncrementCommand.new(@calculator),
       "--" => DecrementCommand.new(@calculator),
       "sqrt" => SquareRootCommand.new(@calculator),
@@ -21,7 +25,6 @@ class Main
       "exp" => ExponentialCommand.new(@calculator),
       "ln" => LogarithmCommand.new(@calculator),
       "!" => FactorialCommand.new(@calculator),
-      "primes" => PrimesCommand.new(@calculator),
       "mw" => MemWriteCommand.new(@calculator),
       "mr" => MemReadCommand.new(@calculator),
       "push" => PushToStackCommand.new(@calculator),
@@ -29,24 +32,29 @@ class Main
     }
   end
 
-  def run
-    puts "Calculator has started"
-    current = gets.chomp.to_f
+  def execute(operation)
+    if @commands_with_additional_operand.key?(operation)
+      @commands_with_additional_operand[operation].execute(gets.chomp.to_f)
+    elsif @commands_without_additional_operand.key?(operation)
+      @commands_without_additional_operand[operation].execute
+    else
+      raise "Operation not exist"
+    end
+  end
 
+  def run
     loop do
       operation = gets.chomp
       break if operation == "exit"
 
       begin
-        operation = @commands[operation]
-        raise "Operation not allowed" unless operation
-        current = operation.execute(current)
-      rescue => e
+        execute(operation)
+      rescue RuntimeError => e
         puts "Error"
         puts e.message
       end
 
-      puts current
+      puts @calculator.current
     end
   end
 end

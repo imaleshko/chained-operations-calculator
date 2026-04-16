@@ -1,89 +1,92 @@
 require "prime"
 
 class Calculator
-  def initialize
+  attr_reader :current
+
+  def initialize(number)
+    @current = number
     @memory = 0
     @stack = []
   end
 
-  def add(number1, number2)
-    number1 + number2
+  def add(number)
+    @current += number
   end
 
-  def subtract(number1, number2)
-    number1 - number2
+  def subtract(number)
+    @current -= number
   end
 
-  def multiply(number1, number2)
-    number1 * number2
+  def multiply(number)
+    @current *= number
   end
 
-  def divide(number1, number2)
-    raise "Division by zero" if number2.zero?
-    number1 / number2
+  def divide(number)
+    raise "Division by zero" if number.zero?
+    @current /= number
   end
 
-  def modulo(number1, number2)
-    raise "Division by zero" if number2.zero?
-    number1 % number2
+  def modulo(number)
+    raise "Division by zero" if number.zero?
+    @current %= number
   end
 
-  def power(number1, number2)
-    number1**number2
+  def power(number)
+    @current **= number
   end
 
-  def increment(number)
-    number + 1
+  def increment
+    @current += 1
   end
 
-  def decrement(number)
-    number - 1
+  def decrement
+    @current -= 1
   end
 
-  def sqrt(number)
-    raise "Square root of negative number" if number < 0
-    Math.sqrt(number)
+  def sqrt
+    raise "Square root of negative number" if @current < 0
+    @current = Math.sqrt(@current)
   end
 
   def to_radians(degrees)
     degrees * Math::PI / 180
   end
 
-  def sin(number)
-    Math.sin(to_radians(number))
+  def sin
+    @current = Math.sin(to_radians(@current))
   end
 
-  def cos(number)
-    Math.cos(to_radians(number))
+  def cos
+    @current = Math.cos(to_radians(@current))
   end
 
-  def tan(number)
-    Math.tan(to_radians(number))
+  def tan
+    @current = Math.tan(to_radians(@current))
   end
 
-  def cot(number)
-    tan = tan(number)
+  def cot
+    tan = Math.tan(to_radians(@current))
     raise "Cotangent of zero" if tan == 0
-    1.0 / tan
+    @current = 1.0 / tan
   end
 
-  def exp(number)
-    Math.exp(number)
+  def exp
+    @current = Math.exp(@current)
   end
 
-  def log(number)
-    raise "Logarithm of negative number or zero" if number <= 0
-    Math.log(number)
+  def log
+    raise "Logarithm of negative number or zero" if @current <= 0
+    @current = Math.log(@current)
   end
 
-  def factorial(number)
-    raise "Factorial of negative number" if number < 0
+  def factorial
+    raise "Factorial of negative number" if @current < 0
     result = 1
-    (1..number.to_i).each { |num| result *= num }
-    result
+    (1..@current.to_i).each { |num| result *= num }
+    @current = result
   end
 
-  def primes(min, max)
+  def primes(max, min = @current)
     raise "Max number must be greater than min number" if max < min
     raise "Max number must be greater than 1" if max < 1
     primes_list = Prime.each(max).select { |number| number > min && number < max }
@@ -91,24 +94,23 @@ class Calculator
     primes_list.each do |number|
       @stack << number
     end
-    primes_list.last
+    @current = primes_list.last
   end
 
-  def mem_write(number)
-    @memory = number
+  def mem_write
+    @memory = @current
   end
 
   def mem_read
-    @memory
+    @current = @memory
   end
 
-  def push_to_stack(number)
-    @stack << number
-    number
+  def push_to_stack
+    @stack << @current
   end
 
   def pop_from_stack
     raise "Stack is empty" if @stack.empty?
-    @stack.pop
+    @current = @stack.pop
   end
 end
