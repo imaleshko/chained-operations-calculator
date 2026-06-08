@@ -1,3 +1,4 @@
+require "bundler/setup"
 require_relative "calculator"
 require_relative "commands"
 
@@ -31,7 +32,7 @@ class Main
       "pop" => PopFromStackCommand.new(@calculator)
     }
   end
-
+  
   def execute(operation)
     if @commands_with_additional_operand.key?(operation)
       @commands_with_additional_operand[operation].execute(gets.chomp.to_f)
@@ -41,19 +42,19 @@ class Main
       raise "Operation not exist"
     end
   end
-
+  
   def run
     loop do
       operation = gets.chomp
       break if operation == "exit"
-
+      
       begin
         execute(operation)
       rescue RuntimeError => e
         puts "Error"
         puts e.message
       end
-
+      
       puts @calculator.current
     end
   end
